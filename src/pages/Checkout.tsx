@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Trash2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 const Checkout = () => {
-  const { cart, totalPrice, clearCart } = useCart();
+  const { cart, totalPrice, clearCart, removeFromCart } = useCart();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -104,12 +105,22 @@ const Checkout = () => {
             <h2 className="font-serif text-2xl mb-6">Order Summary</h2>
             <div className="bg-card p-6 rounded-lg space-y-4">
               {cart.map((item) => (
-                <div key={item.id} className="flex justify-between items-center">
-                  <div>
+                <div key={item.id} className="flex justify-between items-center gap-4 border-b pb-3">
+                  <div className="flex-1">
                     <p className="font-medium">{item.name}</p>
                     <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                   </div>
-                  <p className="font-medium">₹{item.price * item.quantity}</p>
+                  <div className="flex items-center gap-3">
+                    <p className="font-medium">₹{item.price * item.quantity}</p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeFromCart(item.id)}
+                      className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
               <div className="border-t pt-4 flex justify-between items-center text-lg font-bold">

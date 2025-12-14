@@ -4,7 +4,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
-  id: number;
+  id: number | string;
   name: string;
   price: number;
   category: string;
