@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useEditMode } from "@/contexts/EditModeContext";
 import {
   Table,
   TableBody,
@@ -77,12 +78,14 @@ const Admin = () => {
     contactAddress: "Chinchwad, Pune",
     shopName: "SchoolShop",
   });
-  const { toast} = useToast();
+  const { toast } = useToast();
+  const { setAdminAuthenticated } = useEditMode();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
+      setAdminAuthenticated(true);
       toast({
         title: "Welcome Admin",
         description: "Successfully logged in",
@@ -386,6 +389,7 @@ const Admin = () => {
               variant="secondary"
               onClick={() => {
                 setIsAuthenticated(false);
+                setAdminAuthenticated(false);
                 setPassword("");
               }}
             >

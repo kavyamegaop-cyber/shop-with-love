@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useEditMode } from "@/contexts/EditModeContext";
 
 interface EditableTextProps {
   value: string;
@@ -20,11 +21,13 @@ export const EditableText = ({
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(value);
   const { toast } = useToast();
+  const { isAdminAuthenticated } = useEditMode();
   const Component = as;
 
   const handleDoubleClick = () => {
     const editMode = sessionStorage.getItem('editMode') === 'true';
-    if (editMode) {
+    const adminAuth = sessionStorage.getItem('adminAuth') === 'true';
+    if (editMode && adminAuth && isAdminAuthenticated) {
       setIsEditing(true);
     }
   };
