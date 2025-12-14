@@ -377,7 +377,7 @@ const Admin = () => {
               onClick={() => {
                 const currentMode = sessionStorage.getItem('editMode') === 'true';
                 sessionStorage.setItem('editMode', (!currentMode).toString());
-                window.location.href = '/#/';
+                window.location.href = '#/';
               }}
             >
               {sessionStorage.getItem('editMode') === 'true' ? '✏️ Edit Mode: ON' : '👁️ View Mode'}
