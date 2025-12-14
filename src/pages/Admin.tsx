@@ -28,7 +28,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, Save } from "lucide-react";
 
 const ADMIN_PASSWORD = "2009kavya";
 
@@ -70,7 +70,14 @@ const Admin = () => {
     image: "",
     stock: "",
   });
-  const { toast } = useToast();
+  const [siteSettings, setSiteSettings] = useState({
+    heroTitle: "Everything for Student Success",
+    heroSubtitle: "Premium school essentials with fast delivery to Chinchwad, Pune and nearby areas",
+    contactPhone: "9309496280",
+    contactAddress: "Chinchwad, Pune",
+    shopName: "SchoolShop",
+  });
+  const { toast} = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,10 +89,64 @@ const Admin = () => {
       });
       fetchOrders();
       fetchProducts();
+      fetchSiteSettings();
     } else {
       toast({
         title: "Access Denied",
         description: "Incorrect password",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchSiteSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .eq("id", 1)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setSiteSettings({
+          heroTitle: data.hero_title,
+          heroSubtitle: data.hero_subtitle,
+          contactPhone: data.contact_phone,
+          contactAddress: data.contact_address,
+          shopName: data.shop_name,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching site settings:", error);
+    }
+  };
+
+  const saveSiteSettings = async () => {
+    try {
+      const { error } = await supabase
+        .from("site_settings")
+        .update({
+          hero_title: siteSettings.heroTitle,
+          hero_subtitle: siteSettings.heroSubtitle,
+          contact_phone: siteSettings.contactPhone,
+          contact_address: siteSettings.contactAddress,
+          shop_name: siteSettings.shopName,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", 1);
+
+      if (error) throw error;
+
+      toast({
+        title: "Settings Saved!",
+        description: "Site settings have been updated successfully.",
+      });
+    } catch (error) {
+      console.error("Error saving site settings:", error);
+      toast({
+        title: "Save Failed",
+        description: "Could not save settings. Please try again.",
         variant: "destructive",
       });
     }
@@ -324,9 +385,10 @@ const Admin = () => {
 
       <main className="container mx-auto px-6 py-12">
         <Tabs defaultValue="orders" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-2xl grid-cols-3 mb-8">
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="settings">Site Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders">
@@ -608,6 +670,105 @@ const Admin = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <div className="max-w-4xl">
+              <h2 className="font-serif text-3xl mb-8">Site Settings</h2>
+              
+              <div className="space-y-8">
+                <div className="bg-card p-6 rounded-lg border">
+                  <h3 className="font-semibold text-xl mb-4 flex items-center gap-2">
+                    <span>🏠</span> Hero Section
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Shop Name</label>
+                      <Input
+                        value={siteSettings.shopName}
+                        onChange={(e) => setSiteSettings({...siteSettings, shopName: e.target.value})}
+                        placeholder="SchoolShop"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Hero Title</label>
+                      <Input
+                        value={siteSettings.heroTitle}
+                        onChange={(e) => setSiteSettings({...siteSettings, heroTitle: e.target.value})}
+                        placeholder="Everything for Student Success"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Hero Subtitle</label>
+                      <Textarea
+                        value={siteSettings.heroSubtitle}
+                        onChange={(e) => setSiteSettings({...siteSettings, heroSubtitle: e.target.value})}
+                        placeholder="Premium school essentials..."
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-card p-6 rounded-lg border">
+                  <h3 className="font-semibold text-xl mb-4 flex items-center gap-2">
+                    <span>📞</span> Contact Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Phone Number</label>
+                      <Input
+                        value={siteSettings.contactPhone}
+                        onChange={(e) => setSiteSettings({...siteSettings, contactPhone: e.target.value})}
+                        placeholder="9309496280"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Address</label>
+                      <Input
+                        value={siteSettings.contactAddress}
+                        onChange={(e) => setSiteSettings({...siteSettings, contactAddress: e.target.value})}
+                        placeholder="Chinchwad, Pune"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={saveSiteSettings}
+                    className="gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    Save Settings
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={async () => {
+                      const defaultSettings = {
+                        heroTitle: "Everything for Student Success",
+                        heroSubtitle: "Premium school essentials with fast delivery to Chinchwad, Pune and nearby areas",
+                        contactPhone: "9309496280",
+                        contactAddress: "Chinchwad, Pune",
+                        shopName: "SchoolShop",
+                      };
+                      setSiteSettings(defaultSettings);
+                      await saveSiteSettings();
+                      toast({
+                        title: "Settings Reset",
+                        description: "All settings restored to default",
+                      });
+                    }}
+                  >
+                    Reset to Default
+                  </Button>
+                </div>
+
+                <p className="text-sm text-muted-foreground bg-blue-50 p-4 rounded">
+                  💡 <strong>Tip:</strong> Changes are saved to the database and will be visible to all visitors immediately.
+                </p>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </main>

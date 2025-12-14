@@ -1,14 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, Menu, X, Search, MapPin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/contexts/CartContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const navigate = useNavigate();
+  const [shopName, setShopName] = useState("SchoolShop");
+  const [location, setLocation] = useState("Chinchwad, Pune");
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("site_settings")
+          .select("*")
+          .eq("id", 1)
+          .single();
+        
+        if (data) {
+          setShopName(data.shop_name);
+          setLocation(data.contact_address);
+        }
+      } catch (error) {
+        console.log("Using default settings");
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <>
@@ -19,7 +42,7 @@ const Header = () => {
             {/* Logo */}
             <a href="/" className="flex items-center hover:border border-white p-2 transition-all">
               <div className="font-bold text-xl">
-                <span className="text-orange-500">School</span>Shop
+                {shopName}
               </div>
             </a>
 
@@ -28,7 +51,7 @@ const Header = () => {
               <MapPin className="h-5 w-5" />
               <div className="text-xs">
                 <div className="text-gray-300">Deliver to</div>
-                <div className="font-bold">Chinchwad, Pune</div>
+                <div className="font-bold">{location}</div>
               </div>
             </div>
 

@@ -1,4 +1,36 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
 const Footer = () => {
+  const [settings, setSettings] = useState({
+    contactPhone: "9309496280",
+    contactAddress: "Chinchwad, Pune",
+    shopName: "SchoolShop",
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("site_settings")
+          .select("*")
+          .eq("id", 1)
+          .single();
+        
+        if (data) {
+          setSettings({
+            contactPhone: data.contact_phone,
+            contactAddress: data.contact_address,
+            shopName: data.shop_name,
+          });
+        }
+      } catch (error) {
+        console.log("Using default settings");
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <footer className="bg-[#232f3e] text-white mt-12">
       {/* Back to Top */}
@@ -46,8 +78,8 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4 text-base">Contact Us</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li>📞 9309496280</li>
-              <li>📍 Chinchwad, Pune</li>
+              <li>📞 {settings.contactPhone}</li>
+              <li>📍 {settings.contactAddress}</li>
               <li>Maharashtra, India</li>
             </ul>
           </div>
@@ -59,7 +91,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-white"><span className="text-orange-500">School</span>Shop</span>
+              <span className="font-bold text-lg text-white">{settings.shopName}</span>
             </div>
             <div className="flex gap-6">
               <a href="#" className="hover:underline">Conditions of Use</a>

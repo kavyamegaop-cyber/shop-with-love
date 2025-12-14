@@ -1,9 +1,37 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/hero-image.jpg";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const [settings, setSettings] = useState({
+    heroTitle: "Everything for Student Success",
+    heroSubtitle: "Premium school essentials with fast delivery to Chinchwad, Pune and nearby areas",
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from("site_settings")
+          .select("*")
+          .eq("id", 1)
+          .single();
+        
+        if (data) {
+          setSettings({
+            heroTitle: data.hero_title,
+            heroSubtitle: data.hero_subtitle,
+          });
+        }
+      } catch (error) {
+        console.log("Using default settings");
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <section className="bg-gradient-to-b from-blue-50 to-white">
@@ -14,10 +42,10 @@ const Hero = () => {
             {/* Content */}
             <div className="p-8 lg:p-12 text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Everything for Student Success
+                {settings.heroTitle}
               </h1>
               <p className="text-lg mb-6 text-blue-50">
-                Premium school essentials with fast delivery to Chinchwad, Pune and nearby areas
+                {settings.heroSubtitle}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button 
