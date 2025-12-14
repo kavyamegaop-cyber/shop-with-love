@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { EditableText } from "@/components/EditableText";
 import heroImage from "@/assets/hero-image.jpg";
 
 const Hero = () => {
@@ -41,12 +42,19 @@ const Hero = () => {
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Content */}
             <div className="p-8 lg:p-12 text-white">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                {settings.heroTitle}
-              </h1>
-              <p className="text-lg mb-6 text-blue-50">
-                {settings.heroSubtitle}
-              </p>
+              <EditableText
+                value={settings.heroTitle}
+                field="hero_title"
+                as="h1"
+                className="text-4xl md:text-5xl font-bold mb-4"
+              />
+              <EditableText
+                value={settings.heroSubtitle}
+                field="hero_subtitle"
+                as="p"
+                className="text-lg mb-6 text-blue-50"
+                multiline
+              />
               <div className="flex flex-wrap gap-4">
                 <Button 
                   onClick={() => navigate("/products")}

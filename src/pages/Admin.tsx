@@ -371,15 +371,27 @@ const Admin = () => {
       <header className="bg-primary text-primary-foreground py-6">
         <div className="container mx-auto px-6 flex justify-between items-center">
           <h1 className="font-serif text-2xl">Admin Dashboard</h1>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setIsAuthenticated(false);
-              setPassword("");
-            }}
-          >
-            Logout
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                const currentMode = sessionStorage.getItem('editMode') === 'true';
+                sessionStorage.setItem('editMode', (!currentMode).toString());
+                window.location.href = '/#/';
+              }}
+            >
+              {sessionStorage.getItem('editMode') === 'true' ? '✏️ Edit Mode: ON' : '👁️ View Mode'}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setIsAuthenticated(false);
+                setPassword("");
+              }}
+            >
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 

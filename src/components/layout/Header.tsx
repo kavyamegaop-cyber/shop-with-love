@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
+import { EditableText } from "@/components/EditableText";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +43,7 @@ const Header = () => {
             {/* Logo */}
             <a href="/" className="flex items-center hover:border border-white p-2 transition-all">
               <div className="font-bold text-xl">
-                {shopName}
+                <EditableText field="shop_name" defaultValue={shopName} element="span" />
               </div>
             </a>
 
@@ -51,7 +52,9 @@ const Header = () => {
               <MapPin className="h-5 w-5" />
               <div className="text-xs">
                 <div className="text-gray-300">Deliver to</div>
-                <div className="font-bold">{location}</div>
+                <div className="font-bold">
+                  <EditableText field="contact_address" defaultValue={location} element="span" />
+                </div>
               </div>
             </div>
 

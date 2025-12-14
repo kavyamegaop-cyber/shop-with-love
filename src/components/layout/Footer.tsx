@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { EditableText } from "@/components/EditableText";
 
 const Footer = () => {
   const [settings, setSettings] = useState({
@@ -78,8 +79,8 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4 text-base">Contact Us</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li>📞 {settings.contactPhone}</li>
-              <li>📍 {settings.contactAddress}</li>
+              <li>📞 <EditableText field="contact_phone" defaultValue={settings.contactPhone} element="span" /></li>
+              <li>📍 <EditableText field="contact_address" defaultValue={settings.contactAddress} element="span" /></li>
               <li>Maharashtra, India</li>
             </ul>
           </div>
@@ -91,7 +92,9 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-white">{settings.shopName}</span>
+              <span className="font-bold text-lg text-white">
+                <EditableText field="shop_name" defaultValue={settings.shopName} element="span" />
+              </span>
             </div>
             <div className="flex gap-6">
               <a href="#" className="hover:underline">Conditions of Use</a>
